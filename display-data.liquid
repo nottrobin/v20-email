@@ -27,7 +27,8 @@
     "id": {{ shop.id | json }},
     "metafields": [
         {% for field in shop.metafields %}
-            {% if forloop.first != true %},{% endif %}
+            {%- if field.key == "api_secret" %}{% continue %}{% endif %}
+            {%- if forloop.first != true %},{% endif %}
         {
             "namespace": {{ field.namespace | json }},
             "key": {{ field.key | json }},
@@ -136,7 +137,7 @@
     "merchantEditableErrors": {{ order.merchantEditableErrors | json }},
     "metafields": [
         {% for field in order.metafields %}
-            {% if forloop.first != true %},{% endif %}
+            {%- if forloop.first != true %},{% endif %}
         {
             "namespace": {{ field.namespace | json }},
             "key": {{ field.key | json }},

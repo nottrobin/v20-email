@@ -1,8 +1,0 @@
-{% # List glasses %}
-{% for item in order.lineItems %}
-    {% # If the glasses have associated lenses, get the lens item %}
-    {% unless forloop.last %}
-        {% assign next_item = order.lineItems[forloop.index] %}
-        Next title: {{ next_item.title }}
-    {% endunless %}
-{% endfor %}

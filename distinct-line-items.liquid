@@ -1,0 +1,84 @@
+{% # Count items %}
+{% assign total_glasses = 0 %}
+{% for item in order.lineItems %}
+{%   assign product_type_attr = item.customAttributes | where: "key", "_productType" | first %}
+{%   if product_type_attr.value == 'frame' %}
+{%     assign total_glasses = total_glasses | plus: 1 %}
+{%   endif %}
+{% endfor %}
+
+<p>Hi Kevin & Sarah,</p>
+
+<p>Another order!</p>
+
+<p>Order Number: {{ order.name }}</p>
+
+<p>There are {{ total_glasses }} pairs of glasses in this order.</p>
+
+{% for item in order.lineItems %}
+{% assign product_type_attr = item.customAttributes | where: "key", "_productType" | first %}
+
+<hr>
+
+{% if product_type_attr.value == 'frame' %}
+
+<img height="120" align="right" src="{{item.product.featuredImage.src}}">
+
+{% assign prescription_type_attr = item.customAttributes | where: "key", "Prescription Type" | first %}
+{% assign type_option = item.variant.selectedOptions | where: "name", "Prescription or Non-Prescription" | first %}
+{% assign frame_colour_option = item.variant.selectedOptions | where: "name", "Select Frame Colour" | first %}
+{% assign lens_option = item.variant.selectedOptions | where: "name", "Select Lens Type" | first %}
+
+<table>
+    <tr><th align="left">Frame</th><td>{{ item.title }}</td></tr>
+    <tr><th align="left">Type</th><td>{{ type_option.value }}</td></tr>
+    <tr><th align="left">Prescription type</th><td>{{ prescription_type_attr.value }}</td></tr>
+    <tr><th align="left">Frame colour</th><td>{{ frame_colour_option.value }}</td></tr>
+    <tr><th align="left">Lens</th><td>{{ lens_option.value }}</td></tr>
+</table>
+
+{% elsif product_type_attr.value == 'lens' %}
+
+{% assign frame_attr = item.customAttributes | where: "key", "Frame" | first %}
+{% assign od_right_attr = item.customAttributes | where: "key", "OD Right" | first %}
+{% assign os_left_attr = item.customAttributes | where: "key", "OS Left" | first %}
+{% assign segment_height_attr = item.customAttributes | where: "key", "Segment Height" | first %}
+{% assign pd_attr = item.customAttributes | where: "key", "PD" | first %}
+{% assign prism_os_attr = item.customAttributes | where: "key", "Prism OS" | first %}
+{% assign prism_od_attr = item.customAttributes | where: "key", "Prism OD" | first %}
+{% assign prescription_url_attr = item.customAttributes | where: "key", "_Prescription File" | first %}
+{% assign anti_glare_option = item.variant.selectedOptions | where: "name", "Anti-Glare Lens Coating" | first %}
+{% assign hydrophobic_option = item.variant.selectedOptions | where: "name", "Super-Hydrophobic Lens Coating" | first %}
+{% assign scratch_resistant_option = item.variant.selectedOptions | where: "name", "Scratch-Resistant Lens Coating" | first %}
+
+<table>
+    <tr><th align="left">Lens</th><td>{{ item.title }}</td></tr>
+    <tr><th align="left">For frame</th><td>{{ frame_attr.value }}</td></tr>
+    <tr><th align="left">OD Right</th><td>{{ od_right_attr.value }}</td></tr>
+    <tr><th align="left">OS Left</th><td>{{ os_left_attr.value }}</td></tr>
+    <tr><th align="left">Segment Height</th><td>{{ segment_height_attr.value }}</td></tr>
+    <tr><th align="left">PD</th><td>{{ pd_attr.value }}</td></tr>
+    <tr><th align="left">Prism OS</th><td>{{ prism_os_attr.value }}</td></tr>
+    <tr><th align="left">Prism OD</th><td>{{ prism_od_attr.value }}</td></tr>
+    <tr><th align="left">Prescription file</th><td><a href='{{ prescription_url_attr.value }}'>Download</a></td></tr>
+    <tr><th align="left">Anti-glare</th><td>{{ anti_glare_option.value }}</td></tr>
+    <tr><th align="left">Hydrophobic</th><td>{{ hydrophobic_option.value }}</td></tr>
+    <tr><th align="left">Scratch-resistant</th><td>{{ scratch_resistant_option.value }}</td></tr>
+</table>
+{% endif %}
+{% if forloop.last %}<hr>{% endif %}
+{% endfor %}
+
+<h2>Address</h2>
+{{order.customer.firstName}} {{order.customer.lastName}}<br>
+{{order.displayAddress.address1}}<br>
+{{order.displayAddress.address2}}<br>
+{{order.displayAddress.city}}<br>
+{{order.displayAddress.country}}<br>
+{{order.displayAddress.provinceCode}}<br>
+{{order.displayAddress.province}}<br>
+
+<p>Thanks very much!<br><br>
+Tom<br><br>
+07795109851
+</p>

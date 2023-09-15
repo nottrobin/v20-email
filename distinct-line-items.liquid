@@ -69,14 +69,14 @@
 {% if forloop.last %}<hr>{% endif %}
 {% endfor %}
 
-<h2>Address</h2>
+<h4>Shipping address</h4>
 {{order.customer.firstName}} {{order.customer.lastName}}<br>
-{{order.displayAddress.address1}}<br>
-{{order.displayAddress.address2}}<br>
-{{order.displayAddress.city}}<br>
-{{order.displayAddress.country}}<br>
-{{order.displayAddress.provinceCode}}<br>
-{{order.displayAddress.province}}<br>
+{{order.shippingAddress.address1}}<br>
+{{order.shippingAddress.address2}}<br>
+{{order.shippingAddress.city}}<br>
+{{order.shippingAddress.country}}<br>
+{{order.shippingAddress.provinceCode}}<br>
+{{order.shippingAddress.province}}<br>
 
 <p>Thanks very much!<br><br>
 Tom<br><br>

@@ -1,0 +1,11 @@
+{% for item in order.lineItems %}
+    {% unless forloop.first %}<hr>{% endunless %}
+    Title: {{ item.title }}<br>
+    Custom attributes:
+    {% for attr in item.customAttributes %}
+        "{{ attr.key }}": "{{ attr.value }}"
+    {% endfor %}
+    {% for option in item.variant.selectedOptions %}
+        "{{ option.name }}": "{{ option.value }}"
+    {% endfor %}
+{% endfor %}

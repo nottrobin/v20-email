@@ -1,0 +1,113 @@
+{% # Count items %}
+{% assign total_glasses = 0 %}
+{% for item in order.lineItems %}
+{%   for attr in item.customAttributes %}
+{%     if attr.key == '_productType' and attr.value == 'frame' %}
+{%       assign total_glasses = total_glasses | plus: 1 %}
+{%       break %}
+{%     endif %}
+{%   endfor %}
+{% endfor %}
+
+<p>Hi Kevin & Sarah,</p>
+
+<p>Another order!</p>
+
+<p>Order Number: {{ order.name }}</p>
+
+<p>There are {{ total_glasses }} pairs of glasses in this order.</p>
+
+{% for item in order.lineItems %}
+{%   # Is this a lens? %}
+{%   for attr in item.customAttributes %}
+{%     if attr.key == '_productType' %}
+{%       assign product_type = attr.value %}
+{%     endif %}
+{%   endfor %}
+
+{%   if product_type == 'frame' %}
+{%     # Output for the glasses line item %}
+
+{%     # Get info %}
+{%     for attr in item.customAttributes %}
+{%       if attr.key == 'Prescription Type' %}{% assign prescription_type = attr.value %}{% endif %}
+{%     endfor %}
+{%     for option in item.variant.selectedOptions %}
+{%       if option.name == 'Prescription or Non-Prescription' %}{% assign type = option.value %}{% endif %}
+{%       if option.name == 'Select Frame Colour' %}{% assign frame_colour = option.value %}{% endif %}
+{%       if option.name == 'Select Lens Type' %}{% assign lens = option.value %}{% endif %}
+{%     endfor %}
+
+{%     # Horizontal rule for subsequent glasses %}
+<hr>
+
+{%     # Main output %}
+<img width="200" src="{{item.product.featuredImage.src}}">
+<h4>{{ item.title }}</h4>
+<ul>
+    <li><strong>Type:</strong> {{ type }}</li>
+    <li><strong>Prescription type:</strong> {{ prescription_type }}</li>
+    <li><strong>Frame colour:</strong> {{ frame_colour }}</li>
+    <li><strong>Lens:</strong> {{ lens }}</li>
+</ul>
+
+{%   elsif product_type == 'lens' %}
+{%       # Output for the lens %}
+
+{%       # Get info %}
+{%     assign lens_material = item.title | slice: 0, 3 %}
+{%     for attr in item.customAttributes %}
+{%       if attr.key == 'OD Right' %}{% assign od_right = attr.value %}{% endif %}
+{%       if attr.key == 'OS Left' %}{% assign os_left = attr.value %}{% endif %}
+{%       if attr.key == 'Segment Height' %}{% assign segment_height = attr.value %}{% endif %}
+{%       if attr.key == 'PD' %}{% assign pd_value = attr.value %}{% endif %}
+{%       if attr.key == 'Prism OS' %}{% assign prism_os = attr.value %}{% endif %} 
+{%       if attr.key == 'Prism OD' %}{% assign prism_od = attr.value %}{% endif %} 
+{%       if attr.key == '_Prescription File' %}{% assign prescription_file_url = attr.value %}{% endif %} 
+{%     endfor %}
+{%     for option in item.variant.selectedOptions %}
+{%       if option.name == "Anti-Glare Lens Coating" %}{% assign anti_glare = option.value %}{% endif %}
+{%       if option.name == "Super-Hydrophobic Lens Coating" %}{% assign hydrophobic = option.value %}{% endif %}
+{%       if option.name == "Scratch-Resistant Lens Coating" %}{% assign scratch_resistant = option.value %}{% endif %}
+{%     endfor %}
+
+{%     # Output %}
+{%     if anti_glare or hydrophobic or scratch_resistant %}
+<h3>Selected coatings</h3>
+
+<ul>
+    {% if anti_glare %}<li><strong>Anti-glare:</strong> {{ anti_glare }}</li>{% endif %}
+    {% if hydrophobic %}<li><strong>Hydrophobic:</strong> {{ hydrophobic }}</li>{% endif %}
+    {% if scratch_resistant %}<li><strong>Scratch-resistant:</strong> {{ scratch_resistant }}</li>{% endif %}
+</ul>
+{%     endif %}
+    
+<h3>Prescription</h3>
+
+<ul>
+    <li><strong>Prescription type:</strong> {{ prescription_type }}</li>
+    {% if od_right %}<li><strong>OD right:</strong> {{ od_right }}</li>{% endif %}
+    {% if os_left %}<li><strong>OS left:</strong> {{ os_left }}</li>{% endif %}
+    {% if segment_height %}<li><strong>Segment height:</strong> {{ segment_height }}</li>{% endif %}
+    {% if pd_value %}<li><strong>PD:</strong> {{ pd_value }}</li>{% endif %}
+    {% if prism_od %}<li><strong>Prism OD:</strong> {{ prism_od }}</li>{% endif %}
+    {% if prism_os %}<li><strong>Prism OS:</strong> {{ prism_os }}</li>{% endif %}
+    {% if prescription_file_url %}<li><a href="{{ prescription_file_url }}">Download prescription</a></li>{% endif %}
+</ul>
+{%   endif %}
+{%   if forloop.last %}<hr>{% endif %}
+{% endfor %}
+
+<h2>Address</h2>
+{{order.customer.firstName}} {{order.customer.lastName}}<br>
+{% if order.displayAddress.address1 and order.displayAddress.address1 != "" %}{{order.displayAddress.address1}}<br>{% endif %}
+{% if order.displayAddress.address2 and order.displayAddress.address2 != "" %}{{order.displayAddress.address2}}<br>{% endif %}
+{% if order.displayAddress.city and order.displayAddress.city != "" %}{{order.displayAddress.city}}<br>{% endif %}
+{% if order.displayAddress.country and order.displayAddress.country != "" %}{{order.displayAddress.country}}<br>{% endif %}
+{% if order.displayAddress.provinceCode and order.displayAddress.provinceCode != "" %}{{order.displayAddress.provinceCode}}<br>{% endif %}
+{% if order.displayAddress.province and order.displayAddress.province != "" %}{{order.displayAddress.province}}<br>{% endif %}
+
+<p>Thanks very much!<br><br>
+Tom<br><br>
+07795109851
+</p>

@@ -1,0 +1,97 @@
+{% # Count items %}
+{% assign total_glasses = 0 %}
+{% for item in order.lineItems %}
+{% assign is_lens = item.title | slice: 0,2 | IsNumeric %}
+{% if is_lens == false %}
+{% increment total_glasses %}
+{% endif %}
+{% endfor %}
+
+<p>Hi Kevin & Sarah,</p>
+
+<p>Another order!</p>
+
+<p>Order Number: {{ order.name }}</p>
+
+<h1>Glasses</h1>
+
+There are {{ total_glasses }} pairs of glasses in this order.
+
+<!-- Product Image -->
+{% for item in order.lineItems %}
+{% for customAttributes_item in lineItems_item.customAttributes %}
+{% assign is_lens = false %}
+{% if customAttributes_item.key == 'Lens' %}
+{% assign is_lens = true %}
+<img width="200" src="{{lineItems_item.product.featuredImage.src}}">
+{% break %}
+{% endif %}
+{% endfor %}
+
+{% if is_lens %}
+<h3>Details</h3>
+<ul>
+{% endif %}
+
+{% for customAttributes_item in lineItems_item.customAttributes %}
+{% if customAttributes_item.key == 'Frame' %}<li><strong>Frame:</strong> {{customAttributes_item.value}}</li>{% endif %}
+{% endfor %}
+{% for selectedOptions_item in lineItems_item.variant.selectedOptions %}
+{% if selectedOptions_item.name == 'Prescription or Non-Prescription' %}<li><strong>Type:</strong> {{selectedOptions_item.value}}</li>{% endif %}
+{% if selectedOptions_item.name == 'Selected Frame Colour' %}<li><strong>Frame colour:</strong> {{selectedOptions_item.value}}</li>{% endif %}
+{% if selectedOptions_item.name == 'Select Lens Type' %}<li><strong>Lens:</strong> {{selectedOptions_item.value}}</li>{% endif %}
+{% endfor %}
+{% for customAttributes_item in lineItems_item.customAttributes %}
+{% if customAttributes_item.key == 'Lens' %}
+<li><strong>Lens material:</strong> {{ customAttributes_item.value | slice: 0, 3 }}</li>
+{% endif %}
+{% endfor %}
+{% if is_lens == false %}
+</ul>
+{% endif %}
+
+{% if is_lens == false %}
+<h3>Selected coatings</h3>
+<ul>
+{% for selectedOptions_item in lineItems_item.variant.selectedOptions %}  
+{% if selectedOptions_item.name == 'Anti-Glare Lens Coating' %}<li><strong>Anti-Glare:</strong> {{selectedOptions_item.value}}</li>{% endif %}
+{% if selectedOptions_item.name == 'Super-Hydrophobic Lens Coating' %}<li><strong>Hydrophobic:</strong> {{selectedOptions_item.value}}</li>{% endif %}
+{% if selectedOptions_item.name == 'Scratch-Resistant Lens Coating' %}<li><strong>Scratch-Resistant:</strong> {{selectedOptions_item.value}}</li>{% endif %}
+{% endfor %}
+</ul>
+
+<h3>Prescription</h3>
+<ul>
+{% for customAttributes_item in lineItems_item.customAttributes %}
+{% if customAttributes_item.key == 'Prescription Type' %}<li><strong>Prescription type:</strong> </li>{{customAttributes_item.value}}{% endif %}
+{% if customAttributes_item.key == 'OD Right' %}<li><strong>OD Right:</strong> {{customAttributes_item.value}}</li>{% endif %}
+{% if customAttributes_item.key == 'OS Left' %}<li><strong>OS Left:</strong> {{customAttributes_item.value}}</li>{% endif %}
+{% if customAttributes_item.key == 'Segment Height' %}<li><strong>Segment height:</strong> {{customAttributes_item.value}}</li>{% endif %}
+{% if customAttributes_item.key == 'PD' %}<li><strong>PD:</strong> {{customAttributes_item.value}}</li>{% endif %}
+{% if customAttributes_item.key == 'Prism OD' %}<li><strong>Prism OD:</strong> {{customAttributes_item.value}}</li>{% endif %}
+{% if customAttributes_item.key == 'Prism OS' %}<li><strong>Prism OS:</strong> {{customAttributes_item.value}}</li>{% endif %}
+{% if customAttributes_item.key == '_Prescription File' %}<li><strong>Prescription file URL:</strong> {{customAttributes_item.value}}</li>{% endif %}
+{% endfor %}
+</ul>
+{% endif %}
+
+{% endfor %}<!-- End of line item -->
+
+{% if order.note and order.note != "" %}
+<h3>Customer notes</h3>
+<p>{{ order.note }}</p>
+{% endif %}
+
+<h3>Address</h3>
+{{order.customer.firstName}} {{order.customer.lastName}}<br>
+{% if order.displayAddress.address1 and order.displayAddress.address1 != "" %}{{order.displayAddress.address1}}<br>{% endif %}
+{% if order.displayAddress.address2 and order.displayAddress.address2 != "" %}{{order.displayAddress.address2}}<br>{% endif %}
+{% if order.displayAddress.city and order.displayAddress.city != "" %}{{order.displayAddress.city}}<br>{% endif %}
+{% if order.displayAddress.country and order.displayAddress.country != "" %}{{order.displayAddress.country}}<br>{% endif %}
+{% if order.displayAddress.provinceCode and order.displayAddress.provinceCode != "" %}{{order.displayAddress.provinceCode}}<br>{% endif %}
+{% if order.displayAddress.province and order.displayAddress.province != "" %}{{order.displayAddress.province}}<br>{% endif %}
+
+<p>Thanks very much!<br><br>
+Tom<br><br>
+07795109851
+</p>
